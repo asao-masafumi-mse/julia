@@ -2415,7 +2415,7 @@ static jl_value_t *read_verify_mod_list(ios_t *s, jl_array_t *mod_list)
         uuid.hi = read_uint64(s);
         uuid.lo = read_uint64(s);
         uint64_t build_id = read_uint64(s);
-        jl_sym_t *sym = jl_symbol_n(name, len);
+        jl_sym_t *sym = _jl_symbol(name, len);
         jl_module_t *m = (jl_module_t*)jl_array_ptr_ref(mod_list, i);
         if (!m || !jl_is_module(m) || m->uuid.hi != uuid.hi || m->uuid.lo != uuid.lo || m->name != sym || m->build_id != build_id) {
             return jl_get_exceptionf(jl_errorexception_type,
@@ -2808,7 +2808,7 @@ JL_DLLEXPORT jl_array_t *jl_uncompress_argnames(jl_value_t *syms)
     JL_GC_PUSH1(&names);
     for (i = 0; i < len; i++) {
         size_t namelen = strlen(namestr);
-        jl_sym_t *name = jl_symbol_n(namestr, namelen);
+        jl_sym_t *name = _jl_symbol(namestr, namelen);
         jl_array_ptr_set(names, i, name);
         namestr += namelen + 1;
     }
@@ -2824,7 +2824,7 @@ JL_DLLEXPORT jl_value_t *jl_uncompress_argname_n(jl_value_t *syms, size_t i)
     while (remaining) {
         size_t namelen = strlen(namestr);
         if (i-- == 0) {
-            jl_sym_t *name = jl_symbol_n(namestr, namelen);
+            jl_sym_t *name = _jl_symbol(namestr, namelen);
             return (jl_value_t*)name;
         }
         namestr += namelen + 1;
